@@ -19,10 +19,7 @@ class MediaSource
 
     private var state: AudioSourceState = AudioSourceState.STATE_CREATED
         set(value) {
-            if (
-                value == AudioSourceState.STATE_CREATED
-                || value == AudioSourceState.STATE_ERROR
-            ) {
+            if (value == AudioSourceState.STATE_CREATED || value == AudioSourceState.STATE_ERROR) {
                 synchronized(onReadyListeners) {
                     field = value
                     onReadyListeners.forEach { listener: OnReadyListener ->
@@ -33,7 +30,6 @@ class MediaSource
                 field = value
             }
 
-
         }
 
     suspend fun load() {
@@ -41,25 +37,10 @@ class MediaSource
         val data = repository.getAudioData()
         audioMediaMetaData = data.map { audio ->
             MediaMetadataCompat.Builder()
-                .putString(
-                    MediaMetadataCompat.METADATA_KEY_MEDIA_ID,
-                    audio.id.toString()
-                ).putString(
-                    MediaMetadataCompat.METADATA_KEY_ALBUM_ARTIST,
-                    audio.artist
-                ).putString(
-                    MediaMetadataCompat.METADATA_KEY_MEDIA_URI,
-                    audio.uri.toString()
-                ).putString(
-                    MediaMetadataCompat.METADATA_KEY_TITLE,
-                    audio.title
-                ).putString(
-                    MediaMetadataCompat.METADATA_KEY_DISPLAY_SUBTITLE,
-                    audio.displayName
-                ).putLong(
-                    MediaMetadataCompat.METADATA_KEY_DURATION,
-                    audio.duration.toLong()
-                )
+                .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, audio.id.toString())
+                .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_URI, audio.uri.toString())
+                .putString(MediaMetadataCompat.METADATA_KEY_TITLE, audio.title)
+                .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, audio.duration.toLong())
                 .build()
         }
         state = AudioSourceState.STATE_INITIALIZED
@@ -78,21 +59,17 @@ class MediaSource
             val mediaSource = ProgressiveMediaSource
                 .Factory(dataSource)
                 .createMediaSource(mediaItem)
-
             concatenatingMediaSource.addMediaSource(mediaSource)
-
 
         }
         return concatenatingMediaSource
 
     }
 
-
     fun asMediaItem() = audioMediaMetaData.map { metaData ->
         val description = MediaDescriptionCompat.Builder()
             .setTitle(metaData.description.title)
             .setMediaId(metaData.description.mediaId)
-            .setSubtitle(metaData.description.subtitle)
             .setMediaUri(metaData.description.mediaUri)
             .build()
         MediaBrowserCompat.MediaItem(description, FLAG_PLAYABLE)
@@ -107,19 +84,14 @@ class MediaSource
 
 
     fun whenReady(listener: OnReadyListener): Boolean {
-        return if (
-            state == AudioSourceState.STATE_CREATED
-            || state == AudioSourceState.STATE_INITIALIZING
-        ) {
+        return if (state == AudioSourceState.STATE_CREATED || state == AudioSourceState.STATE_INITIALIZING) {
             onReadyListeners += listener
             false
         } else {
             listener.invoke(isReady)
             true
         }
-
     }
-
 
     private val isReady: Boolean
         get() = state == AudioSourceState.STATE_INITIALIZED

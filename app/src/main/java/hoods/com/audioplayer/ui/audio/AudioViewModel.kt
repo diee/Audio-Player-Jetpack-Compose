@@ -47,8 +47,8 @@ class AudioViewModel @Inject constructor(
         updatePlayBack()
     }
 
-    val currentDuration:Long
-    get() = MediaPlayerService.currentDuration
+    val currentDuration: Long
+        get() = MediaPlayerService.currentDuration
 
     var currentAudioProgress = mutableStateOf(0f)
 
@@ -66,26 +66,12 @@ class AudioViewModel @Inject constructor(
                 }
 
             }
-
-
         }
-
 
     }
 
     private suspend fun getAndFormatAudioData(): List<Audio> {
-        return repository.getAudioData().map {
-            val displayName = it.displayName.substringBefore(".")
-            val artist = if (it.artist.contains("<unknown>"))
-                "Unknown Artist" else it.artist
-            it.copy(
-                displayName = displayName,
-                artist = artist
-
-            )
-        }
-
-
+        return repository.getAudioData()
     }
 
     fun playAudio(currentAudio: Audio) {
@@ -140,11 +126,8 @@ class AudioViewModel @Inject constructor(
             }
 
             if (currentDuration > 0) {
-                currentAudioProgress.value = (
-                        currentPlayBackPosition.toFloat()
-                                / currentDuration.toFloat() * 100f
-
-                        )
+                currentAudioProgress.value =
+                    (currentPlayBackPosition.toFloat() / currentDuration.toFloat() * 100f)
             }
 
             delay(K.PLAYBACK_UPDATE_INTERVAL)
@@ -152,10 +135,7 @@ class AudioViewModel @Inject constructor(
                 updatePlayBack()
             }
 
-
         }
-
-
     }
 
     override fun onCleared() {
@@ -166,8 +146,6 @@ class AudioViewModel @Inject constructor(
         )
         updatePosition = false
     }
-
-
 }
 
 

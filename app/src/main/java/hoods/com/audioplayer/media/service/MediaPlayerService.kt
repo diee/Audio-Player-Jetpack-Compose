@@ -52,7 +52,6 @@ class MediaPlayerService : MediaBrowserServiceCompat() {
 
     private lateinit var mediaPlayerNotificationManager: MediaPlayerNotificationManager
     private var currentPlayingMedia: MediaMetadataCompat? = null
-    private val isPlayerInitialized = false
     var isForegroundService: Boolean = false
 
     companion object {
@@ -75,7 +74,6 @@ class MediaPlayerService : MediaBrowserServiceCompat() {
                     PendingIntent.FLAG_UPDATE_CURRENT or
                             PendingIntent.FLAG_IMMUTABLE
                 )
-
 
             }
         mediaSession = MediaSessionCompat(this, TAG).apply {
@@ -135,16 +133,10 @@ class MediaPlayerService : MediaBrowserServiceCompat() {
                 if (!resultsSent) {
                     result.detach()
                 }
-
-
             }
 
             else -> Unit
-
-
         }
-
-
     }
 
 
@@ -166,10 +158,7 @@ class MediaPlayerService : MediaBrowserServiceCompat() {
 
             else -> Unit
 
-
         }
-
-
     }
 
     override fun onTaskRemoved(rootIntent: Intent?) {
@@ -250,10 +239,7 @@ class MediaPlayerService : MediaBrowserServiceCompat() {
                     itemToPlay = itemToPlay,
                     playWhenReady = playWhenReady
                 )
-
-
             }
-
 
         }
 
@@ -283,11 +269,8 @@ class MediaPlayerService : MediaBrowserServiceCompat() {
             }
 
             return MediaDescriptionCompat.Builder().build()
-
-
         }
     }
-
 
     private fun preparePlayer(
         mediaMetadata: List<MediaMetadataCompat>,
@@ -298,15 +281,10 @@ class MediaPlayerService : MediaBrowserServiceCompat() {
         else mediaMetadata.indexOf(itemToPlay)
 
         exoPlayer.addListener(PlayerEventListener())
-        exoPlayer.setMediaSource(
-            mediaSource
-                .asMediaSource(dataSourceFactory)
-        )
+        exoPlayer.setMediaSource(mediaSource.asMediaSource(dataSourceFactory))
         exoPlayer.prepare()
         exoPlayer.seekTo(indexToPlay, 0)
         exoPlayer.playWhenReady = playWhenReady
-
-
     }
 
 
@@ -317,18 +295,12 @@ class MediaPlayerService : MediaBrowserServiceCompat() {
             when (playbackState) {
                 Player.STATE_BUFFERING,
                 Player.STATE_READY -> {
-                    mediaPlayerNotificationManager
-                        .showNotification(exoPlayer)
+                    mediaPlayerNotificationManager.showNotification(exoPlayer)
                 }
                 else -> {
-                    mediaPlayerNotificationManager
-                        .hideNotification()
+                    mediaPlayerNotificationManager.hideNotification()
                 }
-
-
             }
-
-
         }
 
         override fun onEvents(player: Player, events: Player.Events) {
@@ -340,23 +312,10 @@ class MediaPlayerService : MediaBrowserServiceCompat() {
 
             var message = R.string.generic_error
 
-            if (error.errorCode ==
-                PlaybackException.ERROR_CODE_IO_FILE_NOT_FOUND
-            ) {
+            if (error.errorCode == PlaybackException.ERROR_CODE_IO_FILE_NOT_FOUND) {
                 message = R.string.error_media_not_found
             }
-
-            Toast.makeText(
-                applicationContext,
-                message,
-                Toast.LENGTH_SHORT
-            ).show()
-
-
+            Toast.makeText(applicationContext, message, Toast.LENGTH_SHORT).show()
         }
-
-
     }
-
-
 }

@@ -32,55 +32,37 @@ import kotlin.math.floor
 private val dummyAudioList = listOf(
     Audio(
         uri = "".toUri(),
-        displayName = "Kotlin Programming",
         id = 0L,
-        artist = "Hood",
-        data = "",
         duration = 12345,
         title = "Android Programming"
     ),
     Audio(
         uri = "".toUri(),
-        displayName = "Kotlin Programming",
         id = 0L,
-        artist = "Lab",
-        data = "",
         duration = 25678,
         title = "Android Programming"
     ),
     Audio(
         uri = "".toUri(),
-        displayName = "Kotlin Programming",
         id = 0L,
-        artist = "Android Lab",
-        data = "",
         duration = 8765454,
         title = "Android Programming"
     ),
     Audio(
         uri = "".toUri(),
-        displayName = "Kotlin Programming",
         id = 0L,
-        artist = "Kotlin Lab",
-        data = "",
         duration = 23456,
         title = "Android Programming"
     ),
     Audio(
         uri = "".toUri(),
-        displayName = "Kotlin Programming",
         id = 0L,
-        artist = "Hood Lab",
-        data = "",
         duration = 65788,
         title = "Android Programming"
     ),
     Audio(
         uri = "".toUri(),
-        displayName = "Kotlin Programming",
         id = 0L,
-        artist = "Hood Lab",
-        data = "",
         duration = 234567,
         title = "Android Programming"
     ),
@@ -161,21 +143,12 @@ fun AudioItem(
             ) {
                 Spacer(modifier = Modifier.size(4.dp))
                 Text(
-                    text = audio.displayName,
+                    text = audio.title,
                     style = MaterialTheme.typography.h6,
                     overflow = TextOverflow.Clip,
                     maxLines = 1
                 )
                 Spacer(modifier = Modifier.size(4.dp))
-                Text(
-                    text = audio.artist,
-                    style = MaterialTheme.typography.subtitle1,
-                    maxLines = 1,
-                    overflow = TextOverflow.Clip,
-                    color = MaterialTheme.colors
-                        .onSurface
-                        .copy(alpha = .5f)
-                )
 
             }
             Text(text = timeStampToDuration(audio.duration.toLong()))
@@ -301,13 +274,6 @@ fun ArtistInfo(
                 maxLines = 1
             )
             Spacer(modifier = Modifier.size(4.dp))
-            Text(
-                text = audio.artist,
-                fontWeight = FontWeight.Normal,
-                style = MaterialTheme.typography.subtitle1,
-                overflow = TextOverflow.Clip,
-                maxLines = 1
-            )
         }
 
 

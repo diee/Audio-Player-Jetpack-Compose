@@ -43,38 +43,18 @@ internal class MediaPlayerNotificationManager(
             setUseRewindAction(false)
             setUseFastForwardAction(false)
         }
-
-
     }
 
-
-    fun hideNotification(){
+    fun hideNotification() {
         notificationManager.setPlayer(null)
     }
 
-    fun showNotification(player: Player){
+    fun showNotification(player: Player) {
         notificationManager.setPlayer(player)
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    inner class
-    DescriptionAdapter(private val controller: MediaControllerCompat) :
+    inner class DescriptionAdapter(private val controller: MediaControllerCompat) :
         PlayerNotificationManager.MediaDescriptionAdapter {
 
         override fun getCurrentContentTitle(player: Player): CharSequence =
@@ -93,6 +73,5 @@ internal class MediaPlayerNotificationManager(
             return null
         }
     }
-
 
 }
