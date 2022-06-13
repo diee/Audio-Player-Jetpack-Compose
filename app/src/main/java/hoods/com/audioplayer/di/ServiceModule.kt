@@ -63,8 +63,6 @@ object ServiceModule {
             setUpstreamDataSourceFactory(dataSource)
         }
 
-
     }
-
 
 }

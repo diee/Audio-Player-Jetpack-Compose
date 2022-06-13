@@ -53,7 +53,6 @@ internal class MediaPlayerNotificationManager(
         notificationManager.setPlayer(player)
     }
 
-
     inner class DescriptionAdapter(private val controller: MediaControllerCompat) :
         PlayerNotificationManager.MediaDescriptionAdapter {
 

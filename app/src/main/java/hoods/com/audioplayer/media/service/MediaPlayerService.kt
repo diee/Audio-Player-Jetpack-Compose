@@ -59,7 +59,6 @@ class MediaPlayerService : MediaBrowserServiceCompat() {
 
         var currentDuration: Long = 0L
             private set
-
     }
 
     override fun onCreate() {
@@ -97,7 +96,6 @@ class MediaPlayerService : MediaBrowserServiceCompat() {
             setPlaybackPreparer(AudioMediaPlayBackPreparer())
             setQueueNavigator(MediaQueueNavigator(mediaSession))
             setPlayer(exoPlayer)
-
 
         }
         mediaPlayerNotificationManager.showNotification(exoPlayer)
@@ -286,7 +284,6 @@ class MediaPlayerService : MediaBrowserServiceCompat() {
         exoPlayer.seekTo(indexToPlay, 0)
         exoPlayer.playWhenReady = playWhenReady
     }
-
 
     private inner class PlayerEventListener : Player.Listener {
 

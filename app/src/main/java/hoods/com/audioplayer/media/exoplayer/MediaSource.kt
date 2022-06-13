@@ -82,7 +82,6 @@ class MediaSource
         state = AudioSourceState.STATE_CREATED
     }
 
-
     fun whenReady(listener: OnReadyListener): Boolean {
         return if (state == AudioSourceState.STATE_CREATED || state == AudioSourceState.STATE_INITIALIZING) {
             onReadyListeners += listener
@@ -95,7 +94,6 @@ class MediaSource
 
     private val isReady: Boolean
         get() = state == AudioSourceState.STATE_INITIALIZED
-
 
 }
 

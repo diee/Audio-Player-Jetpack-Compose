@@ -34,8 +34,7 @@ class AudioViewModel @Inject constructor(
     private val playbackState = serviceConnection.plaBackState
     val isAudioPlaying: Boolean
         get() = playbackState.value?.isPlaying == true
-    private val subscriptionCallback = object
-        : MediaBrowserCompat.SubscriptionCallback() {
+    private val subscriptionCallback = object : MediaBrowserCompat.SubscriptionCallback() {
         override fun onChildrenLoaded(
             parentId: String,
             children: MutableList<MediaBrowserCompat.MediaItem>
@@ -147,31 +146,3 @@ class AudioViewModel @Inject constructor(
         updatePosition = false
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

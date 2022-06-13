@@ -14,7 +14,7 @@ class AudioRepository @Inject constructor() {
             Audio(
                 uri = "https://wizard-media-production.s3.sa-east-1.amazonaws.com/uploads/audios/studentbook/0036.mp3".toUri(),
                 id = 1,
-                duration = 10,
+                duration = 5,
                 title = "Test 1"
             )
         )
@@ -22,7 +22,7 @@ class AudioRepository @Inject constructor() {
             Audio(
                 uri = "https://wizard-media-production.s3.sa-east-1.amazonaws.com/uploads/audios/studentbook/0019.mp3".toUri(),
                 id = 2,
-                duration = 10,
+                duration = 3,
                 title = "Test 2"
             )
         )
@@ -31,7 +31,7 @@ class AudioRepository @Inject constructor() {
             Audio(
                 uri = "https://wizard-media-production.s3.sa-east-1.amazonaws.com/uploads/audios/studentbook/0020.mp3".toUri(),
                 id = 3,
-                duration = 10,
+                duration = 3,
                 title = "Test 3"
             )
         )

@@ -206,9 +206,7 @@ fun BottomBarPlayer(
             valueRange = 0f..100f
         )
 
-
     }
-
 
 }
 
@@ -254,16 +252,7 @@ fun ArtistInfo(
         modifier = modifier.padding(4.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-
-        PlayerIconItem(
-            icon = Icons.Default.MusicNote,
-            border = BorderStroke(
-                width = 1.dp,
-                color = MaterialTheme.colors.onSurface
-            ),
-        ) {}
         Spacer(modifier = Modifier.size(4.dp))
-
         Column {
             Text(
                 text = audio.title,
@@ -278,7 +267,6 @@ fun ArtistInfo(
 
 
     }
-
 
 }
 
@@ -315,11 +303,7 @@ fun PlayerIconItem(
             )
 
         }
-
-
     }
-
-
 }
 
 
@@ -357,26 +341,4 @@ fun HomeScreenPrev() {
     }
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
