@@ -1,8 +1,6 @@
 package hoods.com.audioplayer.media.service
 
-import android.app.Notification
 import android.app.PendingIntent
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -13,22 +11,22 @@ import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import android.widget.Toast
-import androidx.core.content.ContextCompat
 import androidx.media.MediaBrowserServiceCompat
 import com.google.android.exoplayer2.ExoPlayer
-import com.google.android.exoplayer2.MediaMetadata
 import com.google.android.exoplayer2.PlaybackException
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector
 import com.google.android.exoplayer2.ext.mediasession.TimelineQueueNavigator
-import com.google.android.exoplayer2.ui.PlayerNotificationManager
 import com.google.android.exoplayer2.upstream.cache.CacheDataSource
 import dagger.hilt.android.AndroidEntryPoint
 import hoods.com.audioplayer.R
 import hoods.com.audioplayer.media.constants.K
-import hoods.com.audioplayer.media.exoplayer.MediaPlayerNotificationManager
 import hoods.com.audioplayer.media.exoplayer.MediaSource
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -50,9 +48,7 @@ class MediaPlayerService : MediaBrowserServiceCompat() {
 
     private lateinit var mediaSessionConnector: MediaSessionConnector
 
-    private lateinit var mediaPlayerNotificationManager: MediaPlayerNotificationManager
     private var currentPlayingMedia: MediaMetadataCompat? = null
-    var isForegroundService: Boolean = false
 
     companion object {
         private const val TAG = "MediaPlayerService"
@@ -82,12 +78,6 @@ class MediaPlayerService : MediaBrowserServiceCompat() {
 
         sessionToken = mediaSession.sessionToken
 
-        mediaPlayerNotificationManager = MediaPlayerNotificationManager(
-            this,
-            mediaSession.sessionToken,
-            PlayerNotificationListener()
-        )
-
         serviceScope.launch {
             mediaSource.load()
         }
@@ -96,9 +86,7 @@ class MediaPlayerService : MediaBrowserServiceCompat() {
             setPlaybackPreparer(AudioMediaPlayBackPreparer())
             setQueueNavigator(MediaQueueNavigator(mediaSession))
             setPlayer(exoPlayer)
-
         }
-        mediaPlayerNotificationManager.showNotification(exoPlayer)
 
     }
 
@@ -144,19 +132,6 @@ class MediaPlayerService : MediaBrowserServiceCompat() {
         result: Result<Bundle>
     ) {
         super.onCustomAction(action, extras, result)
-        when (action) {
-
-            K.START_MEDIA_PLAY_ACTION -> {
-                mediaPlayerNotificationManager.showNotification(exoPlayer)
-            }
-            K.REFRESH_MEDIA_PLAY_ACTION -> {
-                mediaSource.refresh()
-                notifyChildrenChanged(K.MEDIA_ROOT_ID)
-            }
-
-            else -> Unit
-
-        }
     }
 
     override fun onTaskRemoved(rootIntent: Intent?) {
@@ -169,37 +144,6 @@ class MediaPlayerService : MediaBrowserServiceCompat() {
         super.onDestroy()
         serviceScope.cancel()
         exoPlayer.release()
-    }
-
-
-    inner class PlayerNotificationListener :
-        PlayerNotificationManager.NotificationListener {
-        override fun onNotificationCancelled(
-            notificationId: Int,
-            dismissedByUser: Boolean
-        ) {
-            stopForeground(true)
-            isForegroundService = false
-            stopSelf()
-        }
-
-        override fun onNotificationPosted(
-            notificationId: Int,
-            notification: Notification,
-            ongoing: Boolean
-        ) {
-            if (ongoing && !isForegroundService) {
-                ContextCompat.startForegroundService(
-                    applicationContext,
-                    Intent(
-                        applicationContext,
-                        this@MediaPlayerService.javaClass
-                    )
-                )
-                startForeground(notificationId, notification)
-                isForegroundService = true
-            }
-        }
     }
 
     inner class AudioMediaPlayBackPreparer :
@@ -247,11 +191,7 @@ class MediaPlayerService : MediaBrowserServiceCompat() {
             extras: Bundle?
         ) = Unit
 
-        override fun onPrepareFromUri(
-            uri: Uri,
-            playWhenReady: Boolean,
-            extras: Bundle?
-        ) = Unit
+        override fun onPrepareFromUri(uri: Uri, playWhenReady: Boolean, extras: Bundle?) = Unit
     }
 
     inner class MediaQueueNavigator(
@@ -286,19 +226,6 @@ class MediaPlayerService : MediaBrowserServiceCompat() {
     }
 
     private inner class PlayerEventListener : Player.Listener {
-
-        override fun onPlaybackStateChanged(playbackState: Int) {
-
-            when (playbackState) {
-                Player.STATE_BUFFERING,
-                Player.STATE_READY -> {
-                    mediaPlayerNotificationManager.showNotification(exoPlayer)
-                }
-                else -> {
-                    mediaPlayerNotificationManager.hideNotification()
-                }
-            }
-        }
 
         override fun onEvents(player: Player, events: Player.Events) {
             super.onEvents(player, events)

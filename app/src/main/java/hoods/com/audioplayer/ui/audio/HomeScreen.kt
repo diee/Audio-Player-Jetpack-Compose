@@ -13,6 +13,7 @@ import androidx.compose.material.icons.filled.MusicNote
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.SkipNext
+import androidx.compose.material.icons.filled.SkipPrevious
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -79,7 +80,8 @@ fun HomeScreen(
     currentPlayingAudio: Audio?,
     onStart: (Audio) -> Unit,
     onItemClick: (Audio) -> Unit,
-    onNext: () -> Unit
+    onNext: () -> Unit,
+    onPrevious: () -> Unit
 ) {
     val scaffoldState = rememberBottomSheetScaffoldState()
 
@@ -97,7 +99,8 @@ fun HomeScreen(
                     audio = currentPlayingAudio,
                     isAudioPlaying = isAudioPlaying,
                     onStart = { onStart.invoke(currentPlayingAudio) },
-                    onNext = { onNext.invoke() }
+                    onNext = { onNext.invoke() },
+                    onPrevious = { onPrevious.invoke() }
                 )
 
             }
@@ -110,8 +113,9 @@ fun HomeScreen(
         ) {
             items(audioList) { audio: Audio ->
                 AudioItem(
+                    isPlaying = audio.id == currentPlayingAudio?.id,
                     audio = audio,
-                    onItemClick = { onItemClick.invoke(audio)},
+                    onItemClick = { onItemClick.invoke(audio) },
                 )
             }
         }
@@ -124,6 +128,7 @@ fun HomeScreen(
 @Composable
 fun AudioItem(
     audio: Audio,
+    isPlaying: Boolean = false,
     onItemClick: (id: Long) -> Unit
 ) {
     Card(
@@ -133,7 +138,8 @@ fun AudioItem(
             .clickable {
                 onItemClick.invoke(audio.id)
             },
-        backgroundColor = MaterialTheme.colors.surface.copy(alpha = .5f)
+        backgroundColor = if (isPlaying) Color.Green.copy(alpha = .5f)
+        else MaterialTheme.colors.surface.copy(alpha = .5f)
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Column(
@@ -160,14 +166,13 @@ fun AudioItem(
 
 }
 
-private fun timeStampToDuration(position:Long):String{
+private fun timeStampToDuration(position: Long): String {
     val totalSeconds = floor(position / 1E3).toInt()
     val minutes = totalSeconds / 60
     val remainingSeconds = totalSeconds - (minutes * 60)
 
     return if (position < 0) "--:--"
-    else "%d:%02d".format(minutes,remainingSeconds)
-
+    else "%d:%02d".format(minutes, remainingSeconds)
 
 
 }
@@ -180,7 +185,8 @@ fun BottomBarPlayer(
     audio: Audio,
     isAudioPlaying: Boolean,
     onStart: () -> Unit,
-    onNext: () -> Unit
+    onNext: () -> Unit,
+    onPrevious: () -> Unit
 ) {
     Column {
         Row(
@@ -197,7 +203,8 @@ fun BottomBarPlayer(
             MediaPlayerController(
                 isAudioPlaying = isAudioPlaying,
                 onStart = { onStart.invoke() },
-                onNext = { onNext.invoke() }
+                onNext = { onNext.invoke() },
+                onPrevious = { onPrevious.invoke() }
             )
         }
         Slider(
@@ -214,7 +221,8 @@ fun BottomBarPlayer(
 fun MediaPlayerController(
     isAudioPlaying: Boolean,
     onStart: () -> Unit,
-    onNext: () -> Unit
+    onNext: () -> Unit,
+    onPrevious: () -> Unit
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -222,6 +230,14 @@ fun MediaPlayerController(
             .height(56.dp)
             .padding(4.dp)
     ) {
+        Spacer(modifier = Modifier.size(8.dp))
+        Icon(
+            imageVector = Icons.Default.SkipPrevious,
+            contentDescription = null,
+            modifier = Modifier.clickable {
+                onPrevious.invoke()
+            }
+        )
         PlayerIconItem(
             icon = if (isAudioPlaying) Icons.Default.Pause
             else Icons.Default.PlayArrow,
@@ -316,9 +332,7 @@ fun BottomBarPrev() {
             onProgressChange = {},
             audio = dummyAudioList[0],
             isAudioPlaying = true,
-            onStart = { /*TODO*/ }) {
-
-        }
+            onStart = { /*TODO*/ }, onNext = {}, onPrevious = {})
     }
 
 }
@@ -334,10 +348,10 @@ fun HomeScreenPrev() {
             audioList = dummyAudioList,
             currentPlayingAudio = dummyAudioList[0],
             onStart = {},
-            onItemClick = {}
-        ) {
-
-        }
+            onItemClick = {},
+            onNext = {},
+            onPrevious = {}
+        )
     }
 
 }

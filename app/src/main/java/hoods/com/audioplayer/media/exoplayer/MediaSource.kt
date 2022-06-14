@@ -11,8 +11,7 @@ import com.google.android.exoplayer2.upstream.cache.CacheDataSource
 import hoods.com.audioplayer.data.repository.AudioRepository
 import javax.inject.Inject
 
-class MediaSource
-@Inject constructor(private val repository: AudioRepository) {
+class MediaSource @Inject constructor(private val repository: AudioRepository) {
     private val onReadyListeners: MutableList<OnReadyListener> = mutableListOf()
 
     var audioMediaMetaData: List<MediaMetadataCompat> = emptyList()
@@ -76,11 +75,6 @@ class MediaSource
 
     }.toMutableList()
 
-
-    fun refresh() {
-        onReadyListeners.clear()
-        state = AudioSourceState.STATE_CREATED
-    }
 
     fun whenReady(listener: OnReadyListener): Boolean {
         return if (state == AudioSourceState.STATE_CREATED || state == AudioSourceState.STATE_INITIALIZING) {

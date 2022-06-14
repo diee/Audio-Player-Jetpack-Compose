@@ -1,6 +1,7 @@
 package hoods.com.audioplayer.ui.audio
 
 import android.support.v4.media.MediaBrowserCompat
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -81,33 +82,19 @@ class AudioViewModel @Inject constructor(
             } else {
                 serviceConnection.transportControl.play()
             }
-
-
         } else {
-            serviceConnection.transportControl
-                .playFromMediaId(
-                    currentAudio.id.toString(),
-                    null
-                )
+            serviceConnection.transportControl.playFromMediaId(currentAudio.id.toString(), null)
         }
 
 
     }
 
-    fun stopPlayBack() {
-        serviceConnection.transportControl.stop()
-    }
-
-    fun fastForward() {
-        serviceConnection.fastForward()
-    }
-
-    fun rewind() {
-        serviceConnection.rewind()
-    }
-
     fun skipToNext() {
         serviceConnection.skipToNext()
+    }
+
+    fun skipToPrevious() {
+        serviceConnection.skipToPrevious()
     }
 
     fun seekTo(value: Float) {
@@ -119,6 +106,7 @@ class AudioViewModel @Inject constructor(
     private fun updatePlayBack() {
         viewModelScope.launch {
             val position = playbackState.value?.currentPosition ?: 0
+            Log.d("Playing", "Audio Playing" + playbackState.value)
 
             if (currentPlayBackPosition != position) {
                 currentPlayBackPosition = position

@@ -52,20 +52,12 @@ class MediaPlayerServiceConnection @Inject constructor(@ApplicationContext conte
         mediaBrowser.sendCustomAction(K.START_MEDIA_PLAY_ACTION, null, null)
     }
 
-    fun fastForward(seconds: Int = 10) {
-        plaBackState.value?.currentPosition?.let {
-            transportControl.seekTo(it + seconds * 1000)
-        }
-    }
-
-    fun rewind(seconds: Int = 10) {
-        plaBackState.value?.currentPosition?.let {
-            transportControl.seekTo(it - seconds * 1000)
-        }
-    }
-
     fun skipToNext() {
         transportControl.skipToNext()
+    }
+
+    fun skipToPrevious() {
+        transportControl.skipToPrevious()
     }
 
     fun subscribe(
@@ -81,15 +73,6 @@ class MediaPlayerServiceConnection @Inject constructor(@ApplicationContext conte
     ) {
         mediaBrowser.unsubscribe(parentId, callBack)
     }
-
-    fun refreshMediaBrowserChildren() {
-        mediaBrowser.sendCustomAction(
-            K.REFRESH_MEDIA_PLAY_ACTION,
-            null,
-            null
-        )
-    }
-
 
     private inner class MediaBrowserConnectionCallBack(private val context: Context) :
         MediaBrowserCompat.ConnectionCallback() {
